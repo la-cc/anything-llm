@@ -6,7 +6,8 @@ concurrency:
 
 on:
   push:
-    branches: ['master'] # put your current branch to create a build. Core team only.
+    tags:
+      - '*' # build on every tag push
     paths-ignore:
       - '**.md'
       - 'cloud-deployments/*'
@@ -47,8 +48,7 @@ jobs:
       
       - name: Log in to Docker Hub
         uses: docker/login-action@f4ef78c080cd8ba55a85445d5b36e214a81df20a
-        # Only login to the Docker Hub if the repo is mintplex/anythingllm, to allow for forks to build on GHCR
-        if: steps.dockerhub.outputs.enabled == 'true' 
+        if: steps.dockerhub.outputs.enabled == 'true'
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
@@ -60,7 +60,7 @@ jobs:
           images: |
             ${{ steps.dockerhub.outputs.enabled == 'true' && 'mintplexlabs/anythingllm' || '' }}
           tags: |
-            type=raw,value=dev
+            type=ref,event=tag
 
       - name: Build and push multi-platform Docker image
         uses: docker/build-push-action@v6
