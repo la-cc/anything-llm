@@ -48,7 +48,6 @@ jobs:
         uses: docker/metadata-action@v4
         with:
           images: |
-            ${{ steps.dockerhub.outputs.enabled == 'true' && 'mintplexlabs/anythingllm' || '' }}
             ghcr.io/${{ github.repository }}
           tags: |
             type=ref,event=tag
